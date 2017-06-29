@@ -1,0 +1,45 @@
+<ion-view view-title="Sign-up">
+  <ion-content>
+                <div class="card" >
+
+                <div class="item item-divider" style="background-color: #4256f4;padding:17px">
+                <h3 style="color:white" ><b>Sign Up</b></h3>
+                </div>
+
+                <form  class="form-horizontal" name="Form.SignupForm" role="form" ng-submit='OnSubmission()' novalidate>
+
+                        <ion-item>
+                         <div class="item-icon-left">
+                             <i class="icon ion-person"></i>
+                             <input id="username" type="text" name="username" ng-model="signup.username" placeholder="Enter a username " ng-pattern="/(?=^.{6,10}$)^[a-zA-Z][a-zA-Z0-9]*[._-]?[a-zA-Z0-9]+$/"required>
+                             <!--validation part-->
+                             <h4 style="color:red" ng-show="SignupForm.username.$error.required && !SignupForm.username.$pristine">* Required Field</h4>
+                             <h4 style="color:red" ng-show="!SignupForm.username.$error.required && SignupForm.username.$error.pattern && !SignupForm.username.$pristine">** Invalid Format</h4>
+                         </div>
+                        </ion-item>
+
+                        <ion-item>
+                        <div class="item-icon-left">
+                             <i class="icon ion-email"></i>
+                             <div ng-class="{ 'has-error' : SignupForm.email.$invalid
+                             && !SignupForm.email.$pristine }">
+                             <input id="email" type="email" name="email" ng-model="signup.email" placeholder="Enter your email " required>
+                              <!--validation part-->
+                             <h4 style="color:red"  ng-show="SignupForm.email.$error.required && !SignupForm.email.$pristine">* Required Field </h4>
+                             <h4 style="color:red" ng-show="!SignupForm.email.$error.required && SignupForm.email.$invalid && !SignupForm.email.$pristine">** Invalid Format</h4>
+                           </div>
+                        </div>
+                        </ion-item>
+
+
+                        <ion-item>
+                        <div class="text-center" >
+                            <input  class="button button-block  button-calm" style="background-color:#4157fc" ng-disabled="SignupForm.$invalid" type="submit" value="Sign Up">
+                        </div>
+                        </ion-item>
+
+              </form>
+
+
+  </ion-content>
+</ion-view>

@@ -1,0 +1,13 @@
+<ion-view view-title="Products">
+  <ion-content>
+    <ion-list>
+      <ion-item ng-repeat="product in products" class="item-thumbnail-left"  href="#/app/products/{{product.id}}">
+            <img ng-src="{{item.img}}">
+            <h2>{{product.name}}
+            <p>{{product.description}}</p>
+            <span style="font-size:75%">{{product.price | currency}}</span>
+          
+      </ion-item>
+    </ion-list>
+  </ion-content>
+</ion-view>
