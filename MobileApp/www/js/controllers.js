@@ -57,7 +57,7 @@ angular.module('starter.controllers', [])
 //controller for the sign up function
 .controller('SignupController',['$scope','$state','SendFactory','$ionicLoading','$ionicPopup','$timeout',function($scope,$state,SendFactory,$ionicLoading,$ionicPopup,$timeout){
 console.log("haiii");
-$scope.signup={username:'',email:''};
+$scope.signup={};
 $scope.Form={};
 //on form submission
 $scope.OnSubmission=function(){
@@ -76,7 +76,7 @@ $scope.OnSubmission=function(){
         console.log(response);
         $ionicLoading.hide();
         //clear the form
-        $scope.signup={username:'',email:''};
+        $scope.signup={};
         $scope.Form.SignupForm.$setPristine();
         $scope.Form.SignupForm.$setUntouched();
         //alert box showing messages

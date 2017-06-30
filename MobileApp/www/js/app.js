@@ -50,7 +50,17 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.service'])
         }
       }
     })
-    
+
+    .state('app.login', {
+        url: '/login',
+        views: {
+          'menuContent': {
+            templateUrl: 'templates/login.html',
+            controller:''
+          }
+        }
+      })
+
     .state('app.products', {
       url: '/products',
       views: {
