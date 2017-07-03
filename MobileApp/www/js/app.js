@@ -37,6 +37,9 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.service'])
     views: {
       'menuContent': {
         templateUrl: 'templates/search.html'
+      },
+      'sideContent':{
+        templateUrl: 'templates/mainmenu.html'
       }
     }
   })
@@ -47,6 +50,9 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.service'])
         'menuContent': {
           templateUrl: 'templates/signup.html',
           controller:'SignupController'
+        },
+        'sideContent':{
+          templateUrl: 'templates/mainmenu.html'
         }
       }
     })
@@ -57,29 +63,41 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.service'])
           'menuContent': {
             templateUrl: 'templates/login.html',
             controller:''
+          },
+          'sideContent':{
+            templateUrl: 'templates/mainmenu.html'
           }
         }
       })
 
     .state('app.products', {
       url: '/products',
+      params:{'productId':0},
       views: {
         'menuContent': {
           templateUrl: 'templates/products.html',
           controller: 'ProductsCtrl'
+        },
+        'sideContent':{
+          templateUrl: 'templates/productcategories.html',
+          controller: 'CategoryCtrl'
         }
       }
     })
 
   .state('app.single', {
-    url: '/products/:productId',
+    params:{'productId':0},
     views: {
       'menuContent': {
-        templateUrl: 'templates/product.html',
-        controller: 'ProductCtrl'
+        templateUrl: 'templates/products.html',
+        controller: 'ProductsCtrl'
+      },
+      'sideContent':{
+        templateUrl: 'templates/productcategories.html',
+        controller: 'CategoryCtrl'
       }
     }
   });
   // if none of the above states are matched, use this as the fallback
-  $urlRouterProvider.otherwise('/app/products');
+  $urlRouterProvider.otherwise('/app/signup');
 });

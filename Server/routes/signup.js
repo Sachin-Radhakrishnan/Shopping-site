@@ -162,7 +162,7 @@ db.select(sqlstmt,function(result){
   db.update("update users set password='"+req.body.password1+"' where user_id='"+user_id+"'");
   db.delete("delete from token where hashValue='"+req.body.token+"'");
   var html='<html><head><title>Shopping portal</title></head><body><h1Congragulations...</h1><h3>You are registered with our shopping portal....</h3></body></html>';
-  res.send(html);
+  res.end(html);
 });
 });
 /************************************************************************************************************************************************/

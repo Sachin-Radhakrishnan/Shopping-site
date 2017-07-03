@@ -45,49 +45,69 @@ angular.module('starter.controllers', [])
 
 
 })
+.factory('PersonService', function($http){
+	var BASE_URL = "http://api.randomuser.me/";
+	var items = [];
 
+	return {
+		GetFeed: function(){
+			return $http.get(BASE_URL+'?results=10').then(function(response){
+				items = response.data.results;
+				return items;
+			});
+		},
+		GetNewUsers: function(){
+			return $http.get(BASE_URL+'?results=10').then(function(response){
+				items = response.data.results;
+				return items;
+			});
+		}
+	}
+})
 /********************************************************************************************/
-.controller('ProductsCtrl',['$scope','SendFactory','$rootScope',function($scope,SendFactory,$rootScope){
+.controller('ProductsCtrl',['$scope','$stateParams','SendFactory','$rootScope', 'PersonService',function($scope,$stateParams,SendFactory,$rootScope, PersonService){
 
  $rootScope.$on('someEvent', function(mass, data) {
-     if(data!=null)
-     {
-         $scope.catid={id:data};
-         $scope.show=true;
-         $scope.numberOfItemsToDisplay=2;
-         SendFactory.seturl('products','POST',$scope.catid);
-         SendFactory.send()
-         .then(function success(response){
-           if(response.data!='error')
-           {
-             $scope.products=response.data;
-             $scope.length=response.data.length;
-             console.log( $scope.length);
-             $scope.loadMore = function() {
-                 if ($scope.length > $scope.numberOfItemsToDisplay)
-                     $scope.numberOfItemsToDisplay +=1;
-                     $scope.$broadcast('scroll.infiniteScrollComplete'); // load 20 more items
-                     //done(); // need to call this when finish loading more data
-                 }
-           }
-           else
-           {
-             $scope.show=false;
-           }
-         },function failure(response){
-            console.log("failure");
-         });
-     }
+   $scope.catid=data;
+
   });
 
+
+
+
+ $scope.items = [];
+
+	PersonService.GetFeed().then(function(items){
+		$scope.items = items;
+	});
+
+	$scope.loadMore = function() {
+		PersonService.GetNewUsers().then(function(items){
+			$scope.items = $scope.items.concat(items);
+
+			$scope.$broadcast('scroll.infiniteScrollComplete');
+		});
+	};
+  //console.log("params changed"+$scope.params);
+  /*SendFactory.seturl('products','GET','');
+  SendFactory.send()
+  .then(function success(response){
+    $scope.products=response.data;
+  },function failure(response){
+    console.log("failure");
+  });
+*/
 }])
 
 /********************************************************************************************/
 .controller('CategoryCtrl',['$scope','SendFactory','$state','$rootScope','$ionicSideMenuDelegate',function($scope,SendFactory,$state,$rootScope,$ionicSideMenuDelegate){
 
+
+
     SendFactory.seturl('category','GET','');
     SendFactory.send()
     .then(function success(response){
+        //console.log(response.data);
         $scope.groups=response.data;
     },function failure(response){
       console.log("failure");
@@ -95,26 +115,30 @@ angular.module('starter.controllers', [])
 
     $scope.clicked=function(id)
     {
+      //console.log(id);
        $rootScope.$broadcast('someEvent', id);
-       //toggle menu
+      //  $rootScope.$broadcast('someEvents',true);
       if ($ionicSideMenuDelegate.isOpenLeft()) {
                $ionicSideMenuDelegate.toggleLeft();
             }
       //$scope.shownGroup = null;
+      //$window.location.reload();
+      // $state.go('app.single', {'productId':id});
+      //$state.transitionTo('app.single', {'productId':id}, { reload: true});
     };
 
     $scope.toggleGroup = function(group) {
-        if ($scope.isGroupShown(group))
-        {
-          $scope.shownGroup = null;
-        }
-        else
-        {
-          $scope.shownGroup = group;
-        }
+      if ($scope.isGroupShown(group)) {
+        $scope.shownGroup = null;
+      } else {
+
+        $scope.shownGroup = group;
+      //  console.log($scope.shownGroup);
+      }
     };
 
     $scope.isGroupShown = function(group) {
+
       return $scope.shownGroup === group;
     };
 

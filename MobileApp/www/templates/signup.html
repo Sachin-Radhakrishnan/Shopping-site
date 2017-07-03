@@ -11,10 +11,11 @@
                         <ion-item>
                          <div class="item-icon-left">
                              <i class="icon ion-person"></i>
-                             <input id="username" type="text" name="username" ng-model="signup.username" placeholder="Enter a username " ng-pattern="/(?=^.{6,10}$)^[a-zA-Z][a-zA-Z0-9]*[._-]?[a-zA-Z0-9]+$/"  maxlength="10" required>
+                             <input id="username" type="text" name="username" ng-model="signup.username" placeholder="Enter a username " ng-pattern="/(?=^.{6,10}$)^[a-zA-Z][a-zA-Z0-9]*[_-]?[a-zA-Z0-9]+$/"  maxlength="10" required>
                              <!--validation part-->
-                             <h4 style="color:red" ng-show="Form.SignupForm.username.$error.required && !Form.SignupForm.username.$pristine">* Required Field</h4>
-                             <h4 style="color:red" ng-show="!Form.SignupForm.username.$error.required && Form.SignupForm.username.$error.pattern && !Form.SignupForm.username.$pristine">** Invalid Format</h4>
+                             <h5 style="color:red" ng-show="Form.SignupForm.username.$error.required && !Form.SignupForm.username.$pristine">* Required Field</h5>
+                             <h6 style="color:red" ng-show="!Form.SignupForm.username.$error.required && Form.SignupForm.username.$error.pattern && !Form.SignupForm.username.$pristine">
+                               **Invalid <button type="button" class="button button-small button-balanced icon-left ion-help-circled" style="margin-left:80px" ng-click="showAlert()">Help</button> </h6>
                          </div>
                         </ion-item>
 
@@ -25,8 +26,8 @@
                              && !SignupForm.email.$pristine }">
                              <input id="email" type="email" name="email" ng-model="signup.email" placeholder="Enter your email " required>
                               <!--validation part-->
-                             <h4 style="color:red"  ng-show="Form.SignupForm.email.$error.required && !Form.SignupForm.email.$pristine">* Required Field </h4>
-                             <h4 style="color:red" ng-show="!Form.SignupForm.email.$error.required && Form.SignupForm.email.$invalid && !Form.SignupForm.email.$pristine">** Invalid Format</h4>
+                             <h5 style="color:red"  ng-show="Form.SignupForm.email.$error.required && !Form.SignupForm.email.$pristine">* Required Field </h5>
+                             <h5 style="color:red" ng-show="!Form.SignupForm.email.$error.required && Form.SignupForm.email.$invalid && !Form.SignupForm.email.$pristine">** Invalid Format</h5>
                            </div>
                         </div>
                         </ion-item>

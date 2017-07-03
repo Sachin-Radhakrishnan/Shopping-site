@@ -1,13 +1,42 @@
 <ion-view view-title="Products">
-  <ion-content>
+
+  <ion-nav-buttons side="right">
+        <button class="button button-large button-icon" back> <i class="ion-arrow-left-c"></i> Back</button>
+  </ion-nav-buttons>
+
+ <div class="list">
+   <div style="margin-top:40px; height:50px" class="item item-input-inset">
+        <label class="item-input-wrapper">
+           <i class="icon ion-search placeholder-icon"></i>
+          <input type="text" placeholder="Search" ng-model="search">
+        </label>
+
+        <button ng-click="search = ''" class="button button-positive button-small" ng-show="search.length">Search
+        </button>
+    </div>
+</div>
+<!--
     <ion-list>
-      <ion-item ng-repeat="product in products" class="item-thumbnail-left"  href="#/app/products/{{product.id}}">
-            <img ng-src="{{item.img}}">
-            <h2>{{product.name}}
-            <p>{{product.description}}</p>
-            <span style="font-size:75%">{{product.price | currency}}</span>
-          
-      </ion-item>
-    </ion-list>
+	<ion-item class="item-avatar" ng-repeat="item in items">
+		<img src="{{item.user.picture.thumbnail}} " />
+		<h2>{{item.user.name.first}} {{item.user.name.last}}</h2>
+		<p>{{item.user.location.city}} {{item.user.password}}</p>
+	</ion-item>
+</ion-list>
+
+-->  <ion-content  style="margin-top:42px;>
+      <div>
+      <ion-list ng-show="show">
+        <ion-item ng-repeat="product in products| limitTo:numberOfItemsToDisplay" class="item-thumbnail-left" >
+              <img ng-src="{{item.img}}">
+              <h2>{{product.product_name}}
+              <p>{{product.product_description}}</p>
+              <span style="font-size:75%">{{product.price | currency:"&#8377;"}}</span>
+        </ion-item>
+      </ion-list>
+
+    <ion-infinite-scroll on-infinite="loadMore()" distance="5%"></ion-infinite-scroll>
+  </div>
   </ion-content>
+
 </ion-view>
