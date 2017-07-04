@@ -57,35 +57,21 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.service'])
       }
     })
 
-    .state('app.login', {
-        url: '/login',
-        views: {
-          'menuContent': {
-            templateUrl: 'templates/login.html',
-            controller:''
-          },
-          'sideContent':{
-            templateUrl: 'templates/mainmenu.html'
-          }
-        }
-      })
-
-    .state('app.products', {
-      url: '/products',
-      params:{'productId':0},
+  .state('app.login', {
+      url: '/login',
       views: {
         'menuContent': {
-          templateUrl: 'templates/products.html',
-          controller: 'ProductsCtrl'
+          templateUrl: 'templates/login.html',
+          controller:'LoginController'
         },
         'sideContent':{
-          templateUrl: 'templates/productcategories.html',
-          controller: 'CategoryCtrl'
+          templateUrl: 'templates/mainmenu.html'
         }
       }
     })
 
-  .state('app.single', {
+  .state('app.products', {
+    url: '/products',
     params:{'productId':0},
     views: {
       'menuContent': {
@@ -97,7 +83,20 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.service'])
         controller: 'CategoryCtrl'
       }
     }
-  });
+  })
+
+.state('app.product', {
+  views: {
+    'menuContent': {
+      templateUrl: 'templates/product.html',
+      controller: 'ProductsCtrl'
+    },
+    'sideContent':{
+      templateUrl: 'templates/productcategories.html',
+      controller: 'CategoryCtrl'
+    }
+  }
+});
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/signup');
 });

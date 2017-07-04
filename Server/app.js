@@ -8,6 +8,7 @@ var bodyParser = require('body-parser');
 var index = require('./routes/index');
 var users = require('./routes/users');
 var signup = require('./routes/signup');
+var login = require('./routes/login');
 var category = require('./routes/addcategory');
 var products = require('./routes/products');
 //middle ware section
@@ -17,6 +18,7 @@ app.use(bodyParser.json());
 app.use('/', index);
 app.use('/users', users);
 app.use('/signup', signup);
+app.use('/login', login);
 app.use('/category', category);
 app.use('/products', products);
 

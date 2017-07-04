@@ -45,11 +45,72 @@ angular.module('starter.controllers', [])
 
 
 })
+/********************************************************************************************/
+//controller for the login function
+.controller('LoginController',['$scope','$state','SendFactory','$ionicLoading','$ionicPopup','$timeout','$window',function($scope,$state,SendFactory,$ionicLoading,$ionicPopup,$timeout,$window){
+
+  $scope.login={};
+  $scope.Form={};
+  $scope.showAlert = function() {
+
+  var alertPopup = $ionicPopup.alert({
+  title: 'Instructions',
+  template: 'Username must contain only alphanumeric characters or <br> single hyphen/underscore,<br> & must begin or end with an alphabet',
+
+  });
+  alertPopup.then(function(res) {
+  });
+
+  };
+  //on form submission
+  $scope.OnSubmission=function(){
+        //for showing the server delay
+        $ionicLoading.show({
+                 content: 'Loading',
+                 animation: 'fade-in',
+                 showBackdrop: true,
+                 maxWidth: 200,
+                 showDelay: 0
+               });
+
+        SendFactory.seturl('login','POST',$scope.login);
+        SendFactory.send()
+        .then(function success(response)
+        {
+          console.log(response);
+          $window.localStorage['token']=response.data.token;
+          console.log($window.localStorage['token']);
+
+          $ionicLoading.hide();
+          //clear the form
+          $scope.login={};
+          $scope.Form.LoginForm.$setPristine();
+          $scope.Form.LoginForm.$setUntouched();
+          $state.transitionTo('app.products', {}, { reload: true, inherit: true, notify: true });
+
+
+        },function failure(response)
+        {
+
+          $window.localStorage.removeItem('token');
+          $ionicLoading.hide();
+          $ionicLoading.show({
+              template: 'Unauthorized User',
+              scope: $scope
+            });
+           $timeout(function() {
+               $ionicLoading.hide();
+           }, 2000);
+        });
+  };
+
+}])
 
 /********************************************************************************************/
-.controller('ProductsCtrl',['$scope','SendFactory','$rootScope',function($scope,SendFactory,$rootScope){
+.controller('ProductsCtrl',['$scope','SendFactory','$rootScope','$state','$ionicPopup','$templateCache',function($scope,SendFactory,$rootScope,$state,$ionicPopup,$templateCache){
 
  $rootScope.$on('someEvent', function(mass, data) {
+     $scope.showsearch=false;
      if(data!=null)
      {
          $scope.catid={id:data};
@@ -61,8 +122,8 @@ angular.module('starter.controllers', [])
            if(response.data!='error')
            {
              $scope.products=response.data;
+             console.log($scope.products);
              $scope.length=response.data.length;
-             console.log( $scope.length);
              $scope.loadMore = function() {
                  if ($scope.length > $scope.numberOfItemsToDisplay)
                      $scope.numberOfItemsToDisplay +=1;
@@ -80,8 +141,53 @@ angular.module('starter.controllers', [])
      }
   });
 
-}])
+  $scope.itemselected=function(data)
+  {
+     $scope.showsearch=true;
+     $scope.productselected=data;
+  };
 
+  $scope.addtocart=function(data)
+  {
+     $scope.pdtid={id:data};
+     SendFactory.seturl('products/addtocart','POST',$scope.pdtid);
+     SendFactory.send()
+     .then(function success(response){
+            if(response.data!='error')
+            {
+              $ionicPopup.alert({
+                 title: 'Online Shopping site',
+                 template: response.data,
+                 okText:'Okay!'
+               }).then(function(res) {
+                 $scope.productselected="";
+                 $scope.products="";
+                 $scope.showsearch=false;
+               });
+
+            }
+            else
+            {
+              $state.transitionTo('app.login', {},{reload: true, inherit: true, notify: true });
+            }
+     },function failure(response){
+        console.log("failure");
+     });
+  };
+
+
+}])
+/********************************************************************************************/
+.controller('ProductCtrl',['$scope','$rootScope','$stateParams' ,function($scope, $rootScope,$stateParams) {
+console.log($rootScope.abc);
+  $scope.$on('SOME_TAG', function(response) {
+
+ });
+
+
+
+
+}])
 /********************************************************************************************/
 .controller('CategoryCtrl',['$scope','SendFactory','$state','$rootScope','$ionicSideMenuDelegate',function($scope,SendFactory,$state,$rootScope,$ionicSideMenuDelegate){
 
@@ -124,7 +230,7 @@ angular.module('starter.controllers', [])
 /********************************************************************************************/
 //controller for the sign up function
 .controller('SignupController',['$scope','$state','SendFactory','$ionicLoading','$ionicPopup','$timeout',function($scope,$state,SendFactory,$ionicLoading,$ionicPopup,$timeout){
-console.log("haiii");
+
 $scope.signup={};
 $scope.Form={};
 $scope.showAlert = function() {
@@ -183,17 +289,16 @@ $scope.OnSubmission=function(){
 
 }])
 
-/********************************************************************************************/
-.controller('ProductCtrl', function($scope, $stateParams) {
-})
+
 /********************************************************************************************/
 .directive('back', ['$window', function($window) {
         return {
             restrict: 'A',
             link: function (scope, elem, attrs) {
                 elem.bind('click', function () {
-                    $window.history.back();
+                    $window.history.go(-1);
                 });
             }
         };
     }]);
+/*********************************************************************************************/

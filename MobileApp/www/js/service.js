@@ -17,4 +17,26 @@ obj.send=function(){
 return $http({method:method,url:url1,data:data}) ;
 };
 return obj;
-}]);
+}])
+//code for injecting authenticaation JWT ITO HTTP headers
+.factory('authInterceptor', function ($rootScope, $q, $window) {
+  return {
+    request: function (config) {
+      config.headers = config.headers || {};
+      if ($window.localStorage['token']) {
+        config.headers.Authorization = 'JWT ' + $window.localStorage['token'];
+      }
+      return config;
+    },
+    response: function (response) {
+      if (response.status === 401) {
+        // handle the case where the user is not authenticated
+      }
+      return response || $q.when(response);
+    }
+  };
+})
+
+.config(function ($httpProvider) {
+  $httpProvider.interceptors.push('authInterceptor');
+});
