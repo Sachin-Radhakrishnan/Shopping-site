@@ -3,7 +3,7 @@
   <ion-nav-buttons side="right">
       <button class="button button-large button-icon" back> <i class="ion-arrow-left-c"></i></button>
       <a href="#/app/products" class="button  button-icon ion-android-home"></a>
-      <ion-icon><a  href="#/page2" class="button  button-icon ion-android-cart"></a>1</ion-icon>
+      <ion-icon ng-click="movetocart()"><a  href="#/app/cart" class="button  button-icon ion-android-cart"></a>1</ion-icon>
 
   </ion-nav-buttons>
 
@@ -14,23 +14,27 @@
 
         <label class="item-input-wrapper">
          <i class="icon ion-search placeholder-icon"></i>
-        <input type="text" placeholder="Search" ng-model="search">
+        <input type="text" placeholder="Search" ng-model="searchform.search">
         </label>
 
-        <button ng-click="search = ''" class="button button-positive button-small" ng-show="search.length">Search
+        <button ng-click="onsearchpress()" class="button button-positive button-small" ng-show="searchform.search.length">Search
         </button>
         </div>
       </div>
 
       <ion-content  style="margin-top:42px;">
 
-      <div>
-          <ion-list ng-show="show" >
-            <ion-item  ng-repeat="product in products| limitTo:numberOfItemsToDisplay" ng-click="itemselected(product)" class="item-thumbnail-left" >
+
+      <div >
+          <ion-list ng-show="show"  >
+            <ion-item   ng-repeat="product in products| limitTo:numberOfItemsToDisplay" ng-click="itemselected(product)" class="item-thumbnail-left" >
                   <img ng-src="{{item.img}}">
-                  <h2>{{product.product_name}}
-                  <p>{{product.product_description}}</p>
-                  <span style="font-size:75%">{{product.price | currency:"&#8377;"}}</span>
+                  <h2 class="item item-divider">{{product.product_name}}
+                    <div class="row" >
+                    <div class="badge badge-assertive" style="margin-top:50px;position:absolute;right:5px">{{product.price | currency:"&#8377;"}}</div>
+                    </div>
+                  <button  class="button button-small button-dark icon ion-bag" style="margin-top:15px;position:absolute;right:100px"> Stock:  {{product.quantity}}</button>
+
             </ion-item>
           </ion-list>
 
@@ -43,21 +47,25 @@
 
  <div ng-show="showsearch" class="list card" style="margin-top:52px;">
 
-     <div class="item item-divider" style="background-color:#4256f4;"><h2 style="color:white;">{{productselected.product_name}}</h2></div>
+     <div class="item item-divider" style="background-color:#2E8B57;">
+       <h2 style="color:white;">{{productselected.product_name}}</h2></div>
 
-     <div class="item item-body item-text-wrap">
-            <img  class="full-image" ng-src="" alt="Image">
-             <h2>{{productselected.product_name}}
-              <span class="badge badge-assertive" style="margin-top:40px;font-size:75%">{{productselected.price | currency:"&#8377;"}}</span></h2>
-             <p style="margin-top:40px;font-size:75%">{{productselected.product_description}}</p>
-             <div class="button-bar" style="background-color::green">
-
-             <button ng-click="addtocart(productselected.product_id)" style="margin-top:52px;" class="button button-balanced button-small "><a  class="button  button-icon icon ion-android-cart"> Add to Cart</a></button>
-             </div>
+      <div class="item item-body item-text-wrap" style="background-color:#FFFAFA;">
+            <div class="row" >
+              <div class="badge badge-assertive">{{productselected.price | currency:"&#8377;"}}</div>
+             </div> <br><br>
+             <img  class="full-image" ng-src="" alt="Image"> <br><br>
+             <b>Product Description:</b><br><br>
+             <p style="font-size:85%">{{productselected.product_description}}</p>
+             <br><br>
+             <button style="background-color:	#F4A460;" ng-click="addtocart(productselected.product_id)"  class="button button-block "><a  class="button  button-icon icon ion-android-cart"> Add to Cart</a></button>
       </div>
 
   </div>
+<!------------------------------------------------------------------->
 
+
+<!---------------------------------------------------------->
 
 
 

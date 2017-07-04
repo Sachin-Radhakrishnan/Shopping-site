@@ -1,0 +1,48 @@
+<ion-view view-title="My Cart">
+
+  <ion-nav-buttons side="right">
+      <button class="button button-large button-icon" back> <i class="ion-arrow-left-c"></i></button>
+      <a href="#/app/products" class="button  button-icon ion-android-home"></a>
+  </ion-nav-buttons>
+  <ion-content>
+
+
+
+        <ion-list >
+
+         <ion-item ng-repeat="product in cartproducts" class="item-thumbnail-left" >
+          <img ng-src="{{item.img}}">
+          <h3 class="button button-small button-dark">{{product.product_name}}<h3> <br><br><br>
+           <p class="button button-clear button-small button-assertive"  style="position:relative;bottom:50px" >{{product.price | currency:"&#8377;"}}</p>
+          <button ng-click='altercart(add,product.product_id,product.quantity)' class="button button-small button-positive icon ion-plus-circled" style="position:absolute;right:170px"></button>
+          <button  class="button button-small button-positive icon ion-bag" style="position:absolute;right:135px"> {{product.quantity}}</button>
+          <button ng-click='altercart(remove,product.product_id,product.quantity)' class="button button-small button-positive icon ion-minus-circled" style="position:absolute;right:105px"></button>
+
+          <button ng-click='altercart(delete,product.product_id,product.quantity)' class="button button-small button-assertive icon ion-android-trash" style="position:absolute;right:8px"></button>
+
+         </ion-item>
+
+       </ion-list>
+
+
+
+<!--
+<div class="list" ng-repeat="product in cartproducts">
+        <div class="row item">
+            <div class="col col-30 item item-avatar">
+                  <img src="img/image12.jpg" />
+            </div>
+            <div class="col col-60 item-text-wrap">
+              <h3 class="button button-clear button-small button-assertive">{{product.product_name}}<h3> <br>
+               <p class="button button-clear button-small button-assertive">{{product.price | currency:"&#8377;"}}</p>
+              <span class="button button-clear button-small button-assertive">{{product.quantity}}</span>
+            </div>
+            <div class="col col-10">
+                <img src="img/image12.jpg" />
+            </div>
+        </div>
+    </div>
+-->
+</ion-content>
+
+</ion-view>

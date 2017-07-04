@@ -85,10 +85,11 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.service'])
     }
   })
 
-.state('app.product', {
+.state('app.cart', {
+  url: '/cart',
   views: {
     'menuContent': {
-      templateUrl: 'templates/product.html',
+      templateUrl: 'templates/cart.html',
       controller: 'ProductsCtrl'
     },
     'sideContent':{

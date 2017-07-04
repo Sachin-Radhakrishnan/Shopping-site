@@ -107,9 +107,15 @@ angular.module('starter.controllers', [])
 }])
 
 /********************************************************************************************/
-.controller('ProductsCtrl',['$scope','SendFactory','$rootScope','$state','$ionicPopup','$templateCache',function($scope,SendFactory,$rootScope,$state,$ionicPopup,$templateCache){
+.controller('ProductsCtrl',['$scope','SendFactory','$rootScope','$state','$ionicPopup','$templateCache','$window',function($scope,SendFactory,$rootScope,$state,$ionicPopup,$templateCache,$window){
 
- $rootScope.$on('someEvent', function(mass, data) {
+  $scope.delete='delete';
+  $scope.add='add';
+  $scope.remove='remove';
+  $scope.searchform;
+  $scope.numberOfItemsToDisplay=2;
+  /******************************************/
+    $rootScope.$on('someEvent', function(mass, data) {
      $scope.showsearch=false;
      if(data!=null)
      {
@@ -129,7 +135,7 @@ angular.module('starter.controllers', [])
                      $scope.numberOfItemsToDisplay +=1;
                      $scope.$broadcast('scroll.infiniteScrollComplete'); // load 20 more items
                      //done(); // need to call this when finish loading more data
-                 }
+                 };
            }
            else
            {
@@ -141,12 +147,14 @@ angular.module('starter.controllers', [])
      }
   });
 
+  /******************************************/
   $scope.itemselected=function(data)
   {
      $scope.showsearch=true;
      $scope.productselected=data;
   };
 
+  /******************************************/
   $scope.addtocart=function(data)
   {
      $scope.pdtid={id:data};
@@ -174,11 +182,106 @@ angular.module('starter.controllers', [])
         console.log("failure");
      });
   };
+/******************************************/
+  $scope.movetocart=function(){
+    SendFactory.seturl('products/displaycart','GET');
+    SendFactory.send()
+    .then(function success(response){
+           if(response.data!='error'&& response.data !='empty')
+           {
+             $rootScope.cartproducts=response.data;
+             $window.localStorage['cartproducts']=$scope.cartproducts;
+           }
+           else if (response.data=='empty')
+           {
+               $rootScope.cartproducts=[];
+               $window.localStorage['cartproducts']=$scope.cartproducts;
+           }
+           else
+           {
+             $state.transitionTo('app.login', {},{reload: true, inherit: true, notify: true });
+           }
+    },function failure(response){
+       console.log("failure");
+    });
 
+  };
+
+  /******************************************/
+  $scope.altercart=function(state,pdtid,quantity)
+  {
+
+        $scope.data={action:state,id:pdtid,quantity:quantity};
+        console.log($scope.data);
+        SendFactory.seturl('products/altercart','POST',$scope.data);
+        SendFactory.send()
+        .then(function success(response){
+           console.log(response);
+           if(response.data=='success')
+           {
+            $scope.movetocart();
+           }
+
+           else
+           {
+             $ionicPopup.alert({
+                title: 'Online Shopping site',
+                template: 'Sorry...The product is out off stock....',
+                okText:'Okay!'
+              });
+           }
+
+         },function failure(response){
+           console.log("failure");
+        });
+
+  };
+
+ /******************************************************************************************/
+ $scope.onsearchpress=function(){
+
+   SendFactory.seturl('products/search','POST',$scope.searchform);
+   SendFactory.send()
+   .then(function success(response){
+      //console.log(response.data);
+      if(response.data!='error')
+      {
+         $scope.products=response.data;
+           $scope.searchform.search="";
+         console.log($scope.products);
+         $scope.show=true;
+         $scope.numberOfItemsToDisplay=2;
+         $scope.length=response.data.length;
+         $scope.loadMore = function() {
+             if ($scope.length > $scope.numberOfItemsToDisplay)
+                 $scope.numberOfItemsToDisplay +=1;
+                 $scope.$broadcast('scroll.infiniteScrollComplete'); // load 20 more items
+                 //done(); // need to call this when finish loading more data
+             };
+
+      }
+      else
+      {
+        $ionicPopup.alert({
+           title: 'Online Shopping site',
+           template: 'No match found...Refine your search',
+           okText:'Okay!'
+         }).then(function(res) {
+           $scope.productselected="";
+           $scope.products="";
+           $scope.showsearch=false;
+         });
+
+      }
+    },function failure(response){
+      console.log("failure");
+   });
+
+ };
 
 }])
 /********************************************************************************************/
-.controller('ProductCtrl',['$scope','$rootScope','$stateParams' ,function($scope, $rootScope,$stateParams) {
+.controller('CartCtrl',['$scope','$rootScope','$stateParams' ,function($scope, $rootScope,$stateParams) {
 console.log($rootScope.abc);
   $scope.$on('SOME_TAG', function(response) {
 
@@ -201,6 +304,7 @@ console.log($rootScope.abc);
 
     $scope.clicked=function(id)
     {
+         $state.transitionTo('app.products', {},{reload: true, inherit: true, notify: true });
        $rootScope.$broadcast('someEvent', id);
        //toggle menu
       if ($ionicSideMenuDelegate.isOpenLeft()) {
