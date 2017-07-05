@@ -198,8 +198,11 @@ angular.module('starter.controllers', [])
     .then(function success(response){
            if(response.data!='error'&& response.data !='empty')
            {
+             $rootScope.total=0;
              $rootScope.cartproducts=response.data;
              $rootScope.showcartempty=false;
+             for(var i=0;i<$rootScope.cartproducts.length;i++)
+                $rootScope.total+= ($rootScope.cartproducts[i].price)*$rootScope.cartproducts[i].quantity;
              $window.localStorage['cartproducts']=$scope.cartproducts;
              $window.localStorage['cartlength']=$scope.cartproducts.length;
            }
@@ -259,8 +262,8 @@ angular.module('starter.controllers', [])
       if(response.data!='error')
       {
          $scope.products=response.data;
-           $scope.searchform.search="";
-         console.log($scope.products);
+         $scope.searchform.search="";
+         $scope.showlogo=false;
          $scope.show=true;
          $scope.numberOfItemsToDisplay=2;
          $scope.length=response.data.length;
@@ -297,7 +300,45 @@ $scope.displaycount=function()
 $scope.cartlength= $window.localStorage['cartlength'];
 return $scope.cartlength;
 };
+/********************************************************************************/
+$rootScope.Form={};
+$rootScope.checkout={};
+$scope.checkoutuser=function(data){
+$rootScope.checkouttotal=data;
+$state.transitionTo('app.checkout', {},{reload: true, inherit: true, notify: true });
+$rootScope.showonlysummary=true;
+$rootScope.showshipinfoinput=false;
+$rootScope.showshipinfo=false;
+if($rootScope.Form.Checkout!=null){
+$rootScope.checkout={};
+$rootScope.Form.Checkout.$setPristine(); }
 
+};
+/********************************************************************************/
+$scope.getshippinginformation=function()
+{
+$rootScope.showshipinfoinput=true;
+$rootScope.showshipinfo=false;
+};
+/**********************************************************************************/
+$rootScope.submitshipinfo=function(){
+  console.log("3");
+  console.log($rootScope.Form);
+$rootScope.showshipinfoinput=false;
+$rootScope.showshipinfo=true;
+};
+/**********************************************************************************/
+$rootScope.editcart=function(){
+console.log($rootScope.Form);
+$rootScope.Form.Checkout.$setPristine();
+$state.transitionTo('app.cart', {},{reload: true, inherit: true, notify: true });
+};
+/*********************************************************************************/
+$rootScope.placeorder=function(){
+$rootScope.grandtotal=$rootScope.total+Math.round($rootScope.total*0.06);
+$rootScope.checkout.grandtotal=$rootScope.grandtotal;
+console.log($rootScope.checkout);
+};
 
 }])
 /********************************************************************************************/

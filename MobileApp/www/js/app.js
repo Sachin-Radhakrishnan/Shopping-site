@@ -97,6 +97,20 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.service'])
       controller: 'CategoryCtrl'
     }
   }
+})
+
+.state('app.checkout', {
+  url: '/checkout',
+  views: {
+    'menuContent': {
+      templateUrl: 'templates/checkout.html',
+      controller: 'ProductsCtrl'
+    },
+    'sideContent':{
+      templateUrl: 'templates/productcategories.html',
+      controller: 'CategoryCtrl'
+    }
+  }
 });
   // if none of the above states are matched, use this as the fallback
   $urlRouterProvider.otherwise('/app/signup');

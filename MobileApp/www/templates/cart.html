@@ -1,7 +1,6 @@
 <ion-view view-title="My Cart">
 
   <ion-nav-buttons side="right">
-      <button class="button button-large button-icon" back> <i class="ion-arrow-left-c"></i></button>
       <a href="#/app/products" class="button  button-icon ion-android-home"></a>
   </ion-nav-buttons>
   <ion-content>
@@ -11,22 +10,34 @@
      <img class="full-image"src="./img/empty-cart.jpg">
    </div>
 
+   <div class="row" ng-show="!showcartempty" style="background-color:#0cf98b;" >
+   <div class="col" style="color:#050096;">
+   Sub Total:
+   </div>
+   <div class="col" style="color:#d80015">
+    {{total | currency:"&#8377;"}}
+   </div>
+   <div class="col">
+    <button ng-click='checkoutuser(total)' class="button button-small button-positive icon ion-log-out" style="width:100px"> Check Out</button>
+   </div>
+
+   </div>
+
 
         <ion-list >
 
          <ion-item ng-repeat="product in cartproducts" class="item-thumbnail-left" >
-          <img ng-src="{{item.img}}">
-          <h3 class="button button-small button-dark">{{product.product_name}}<h3> <br><br><br>
-           <p class="button button-clear button-small button-assertive"  style="position:relative;bottom:50px" >{{product.price | currency:"&#8377;"}}</p>
-          <button ng-click='altercart(add,product.product_id,product.quantity)' class="button button-small button-positive icon ion-plus-circled" style="position:absolute;right:170px"></button>
-          <button  class="button button-small button-positive icon ion-bag" style="position:absolute;right:135px"> {{product.quantity}}</button>
+          <img ng-src="/img/product.jpg">
+          <h3 class="item item-divider">{{product.product_name}}<h3> <br><br><br>
+          <p class="button button-clear button-small button-assertive"  style="position:relative;bottom:50px" >{{product.price | currency:"&#8377;"}}</p>
+          <button ng-click='altercart(add,product.product_id,product.quantity)' class="button button-small button-positive icon ion-plus-circled" style="position:absolute;right:175px"></button>
+          <button class="button button-small button-positive icon ion-bag" style="position:absolute;right:130px;width:50px"> {{product.quantity}}</button>
           <button ng-click='altercart(remove,product.product_id,product.quantity)' class="button button-small button-positive icon ion-minus-circled" style="position:absolute;right:105px"></button>
-
-          <button ng-click='altercart(delete,product.product_id,product.quantity)' class="button button-small button-assertive icon ion-android-trash" style="position:absolute;right:8px"></button>
-
+          <button ng-click='altercart(delete,product.product_id,product.quantity)' class="button button-small button-assertive icon ion-android-trash" style="position:absolute;right:5px"></button>
          </ion-item>
 
        </ion-list>
+
 
 
 
