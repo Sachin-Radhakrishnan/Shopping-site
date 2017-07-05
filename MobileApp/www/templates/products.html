@@ -3,7 +3,9 @@
   <ion-nav-buttons side="right">
       <button class="button button-large button-icon" back> <i class="ion-arrow-left-c"></i></button>
       <a href="#/app/products" class="button  button-icon ion-android-home"></a>
-      <ion-icon ng-click="movetocart()"><a  href="#/app/cart" class="button  button-icon ion-android-cart"></a>1</ion-icon>
+      <ion-icon ng-click="movetocart()">
+        <a  href="#/app/cart" class="button button-icon ion-android-cart">
+       <sup style="color:red;">{{ displaycount(); }}</sup></a></ion-icon>
 
   </ion-nav-buttons>
 
@@ -21,6 +23,10 @@
         </button>
         </div>
       </div>
+
+      <div ng-show="showlogo" class="item item-image" style="height:350px;margin-top:30px;margin:30px;">
+       <img class="full-image"src="./img/product.jpg">
+     </div>
 
       <ion-content  style="margin-top:42px;">
 

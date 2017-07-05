@@ -110,10 +110,12 @@ angular.module('starter.controllers', [])
 .controller('ProductsCtrl',['$scope','SendFactory','$rootScope','$state','$ionicPopup','$templateCache','$window',function($scope,SendFactory,$rootScope,$state,$ionicPopup,$templateCache,$window){
 
   $scope.delete='delete';
+  $scope.showlogo=true;
   $scope.add='add';
   $scope.remove='remove';
   $scope.searchform;
   $scope.numberOfItemsToDisplay=2;
+  $rootScope.showcartempty=false;
   /******************************************/
     $rootScope.$on('someEvent', function(mass, data) {
      $scope.showsearch=false;
@@ -128,6 +130,7 @@ angular.module('starter.controllers', [])
            if(response.data!='error')
            {
              $scope.products=response.data;
+             $scope.showlogo=false;
              console.log($scope.products);
              $scope.length=response.data.length;
              $scope.loadMore = function() {
@@ -140,6 +143,7 @@ angular.module('starter.controllers', [])
            else
            {
              $scope.show=false;
+             $scope.showlogo=true;
            }
          },function failure(response){
             console.log("failure");
@@ -163,6 +167,7 @@ angular.module('starter.controllers', [])
      .then(function success(response){
             if(response.data!='error')
             {
+
               $ionicPopup.alert({
                  title: 'Online Shopping site',
                  template: response.data,
@@ -171,7 +176,11 @@ angular.module('starter.controllers', [])
                  $scope.productselected="";
                  $scope.products="";
                  $scope.showsearch=false;
+                 $scope.showlogo=true;
                });
+               //adding an item increases cart count
+               if(response.data=='Item added to your cart')
+                 $window.localStorage['cartlength']=parseInt($window.localStorage['cartlength'])+1;
 
             }
             else
@@ -190,12 +199,15 @@ angular.module('starter.controllers', [])
            if(response.data!='error'&& response.data !='empty')
            {
              $rootScope.cartproducts=response.data;
+             $rootScope.showcartempty=false;
              $window.localStorage['cartproducts']=$scope.cartproducts;
+             $window.localStorage['cartlength']=$scope.cartproducts.length;
            }
            else if (response.data=='empty')
            {
                $rootScope.cartproducts=[];
-               $window.localStorage['cartproducts']=$scope.cartproducts;
+               $rootScope.showcartempty=true;
+               $window.localStorage['cartlength']=0;
            }
            else
            {
@@ -270,14 +282,22 @@ angular.module('starter.controllers', [])
            $scope.productselected="";
            $scope.products="";
            $scope.showsearch=false;
+           $scope.searchform.search="";
          });
-
+          $scope.showlogo=true;
       }
     },function failure(response){
       console.log("failure");
    });
 
  };
+/*******************************************************************************/
+$scope.displaycount=function()
+{
+$scope.cartlength= $window.localStorage['cartlength'];
+return $scope.cartlength;
+};
+
 
 }])
 /********************************************************************************************/
@@ -305,7 +325,7 @@ console.log($rootScope.abc);
     $scope.clicked=function(id)
     {
          $state.transitionTo('app.products', {},{reload: true, inherit: true, notify: true });
-       $rootScope.$broadcast('someEvent', id);
+         $rootScope.$broadcast('someEvent', id);
        //toggle menu
       if ($ionicSideMenuDelegate.isOpenLeft()) {
                $ionicSideMenuDelegate.toggleLeft();
