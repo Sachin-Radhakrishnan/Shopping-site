@@ -104,7 +104,6 @@ router.get('/displaycart', function(req, res,next) {
                   for(var i=0;i<result1.length;i++)
                     id[i]=result1[i].product_id;
 
-
                    result1.forEach(function(object){
                      var sql1="select * from product where product_id="+id[count]+" ";
                      count++;
@@ -194,5 +193,84 @@ router.post('/altercart', function(req, res,next) {
   })(req, res, next);
 
 });
+/*********************************************************************************************************************************/
+router.post('/placeorder', function(req, res,next) {
+  auth.passport.authenticate('jwt', function(err, user, info) {
+    if(user!=false)
+    {
+
+      console.log(req.body);
+      var unavailable=[],dummy=[],obj1,obj2;
+      var count=0;
+      req.body.pdt_ids.forEach(function(object){
+        var sql1="select * from product where product_id="+object.product_id+" ";
+        count++;
+        db.select(sql1,function(result){
+            var result2 = JSON.parse(result);
+            if(result2[0].quantity<object.quantity)
+             {
+                 obj1={};
+                 obj1.status="unavailable";
+                 obj1.product_id=result2[0].product_id;
+                 obj1.product_name=result2[0].product_name;
+                 obj1.quantity=result2[0].quantity;
+                 unavailable.push(obj1);
+             }
+                 obj2={abc:"hai"};
+                 dummy.push(obj2);
+
+            if(req.body.pdt_ids.length==dummy.length)
+                {
+                  console.log(unavailable);
+                  if(unavailable.length!=0)
+                   {
+                    res.json(unavailable);
+                   }
+                   else
+                   {
+                     var sql2="delete from shoppingcart where user_id="+user[0].user_id+" ";
+                     db.delete(sql2);
+                     res.json("success");
+                   }
+                }
+         });
+      });
+          /* var sql1="select quantity from product where product_id="+req.body.id+" ";
+           db.select(sql1,function(result){
+           var result1 = JSON.parse(result);
+           var quantity=result1[0].quantity;
+            if(quantity>0)
+             {
+                 var sql="select * from shoppingcart where user_id="+user[0].user_id+" and product_id="+req.body.id+" ";
+                 db.select(sql,function(result){
+                      if(result=='[]')
+                      {
+                        var sql2="insert into shoppingcart(user_id,product_id) values ("+user[0].user_id+","+req.body.id+")";
+                        db.insert(sql2);
+                        res.json("Item added to your cart");
+                      }
+                      else
+                      {
+                        res.json("Already added to cart");
+                      }
+                 }); //sql closing
+             }
+
+             else
+             {
+                 res.json("Sorry...Product run out off stock..");
+             }
+
+           });*/
+    }
+    else
+    {
+       res.json("error");
+    }
+
+  })(req, res, next);
+
+});
+
 /*********************************************************************************************************************************/
 module.exports = router;

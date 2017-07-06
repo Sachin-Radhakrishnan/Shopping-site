@@ -1,4 +1,9 @@
 <ion-view view-title="Check Out">
+
+  <ion-nav-buttons side="right">
+      <a ng-click="goHome()" class="button  button-icon ion-android-home"></a>
+  </ion-nav-buttons>
+
   <ion-content>
 
 <!-- **************************************  Cart summary  ******************************************************************* -->
@@ -19,14 +24,14 @@
                               </label>
                               <label class="item item-input item-stacked-label">
                                  <span class="input-label" style="color:#050096;">Shipping-Charge</span>
-                                 <input type="text" value="{{0.06*checkouttotal|number:0}}" style="background-color:white;" disabled>
+                                 <input type="text" value="{{0.01*checkouttotal|number:0}}" style="background-color:white;" disabled>
                              </label>
                           </div>
                           <!-- col2  -->
                           <div class="col item item-divider" style="background-color:#fff791;margin-left:10px;margin-right:2px;margin-top:30px;">
                               <label class="item  item-input item-stacked-label">
                                  <span class="input-label"  style="color:#050096;">Grand total</span>
-                                 <input type="text" id="abc" value="{{(checkouttotal+0.06*checkouttotal)|number:0}}" style="background-color:#fff791;" disabled>
+                                 <input type="text" id="abc" value="{{(checkouttotal+0.01*checkouttotal)|number:0}}" style="background-color:#fff791;" disabled>
                               </label>
                           </div>
                            <!-- row ends  -->

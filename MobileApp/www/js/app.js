@@ -22,7 +22,8 @@ angular.module('starter', ['ionic', 'starter.controllers','starter.service'])
   });
 })
 
-.config(function($stateProvider, $urlRouterProvider) {
+.config(function($stateProvider, $urlRouterProvider,$ionicConfigProvider) {
+
   $stateProvider
 
     .state('app', {

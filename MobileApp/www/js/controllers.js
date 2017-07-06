@@ -12,7 +12,7 @@ angular.module('starter.controllers', [])
   // Form data for the login modal
   $scope.loginData = {};
    $scope.show=true;
-   $rootScope.$on('someEvents', function(mass, data) { $scope.show=data; });
+   $rootScope.$on('hide', function(mass, data) { $scope.show=data; });
   // Create the login modal that we will use later
   $ionicModal.fromTemplateUrl('templates/login.html', {
     scope: $scope
@@ -107,7 +107,7 @@ angular.module('starter.controllers', [])
 }])
 
 /********************************************************************************************/
-.controller('ProductsCtrl',['$scope','SendFactory','$rootScope','$state','$ionicPopup','$templateCache','$window',function($scope,SendFactory,$rootScope,$state,$ionicPopup,$templateCache,$window){
+.controller('ProductsCtrl',['$scope','SendFactory','$rootScope','$state','$ionicPopup','$ionicHistory','$window',function($scope,SendFactory,$rootScope,$state,$ionicPopup,$ionicHistory,$window){
 
   $scope.delete='delete';
   $scope.showlogo=true;
@@ -116,6 +116,11 @@ angular.module('starter.controllers', [])
   $scope.searchform;
   $scope.numberOfItemsToDisplay=2;
   $rootScope.showcartempty=false;
+  $scope.$on("$ionicView.enter", function(event, data){
+   // handle event
+   //console.log("State Params: ", data.stateParams);
+   $rootScope.$emit('hide', true);
+});
   /******************************************/
     $rootScope.$on('someEvent', function(mass, data) {
      $scope.showsearch=false;
@@ -199,10 +204,20 @@ angular.module('starter.controllers', [])
            if(response.data!='error'&& response.data !='empty')
            {
              $rootScope.total=0;
+             $rootScope.pdt_ids=[];
              $rootScope.cartproducts=response.data;
+             console.log($rootScope.cartproducts);
              $rootScope.showcartempty=false;
              for(var i=0;i<$rootScope.cartproducts.length;i++)
-                $rootScope.total+= ($rootScope.cartproducts[i].price)*$rootScope.cartproducts[i].quantity;
+                {
+                  $rootScope.total+= ($rootScope.cartproducts[i].price)*$rootScope.cartproducts[i].quantity;
+                  $scope.obj1={};
+                  $scope.obj1.product_id=$rootScope.cartproducts[i].product_id;
+                  $scope.obj1.quantity=$rootScope.cartproducts[i].quantity;
+                  $rootScope.pdt_ids.push($scope.obj1);
+                }
+
+
              $window.localStorage['cartproducts']=$scope.cartproducts;
              $window.localStorage['cartlength']=$scope.cartproducts.length;
            }
@@ -227,7 +242,6 @@ angular.module('starter.controllers', [])
   {
 
         $scope.data={action:state,id:pdtid,quantity:quantity};
-        console.log($scope.data);
         SendFactory.seturl('products/altercart','POST',$scope.data);
         SendFactory.send()
         .then(function success(response){
@@ -297,49 +311,97 @@ angular.module('starter.controllers', [])
 /*******************************************************************************/
 $scope.displaycount=function()
 {
-$scope.cartlength= $window.localStorage['cartlength'];
-return $scope.cartlength;
+      $scope.cartlength= $window.localStorage['cartlength'];
+      return $scope.cartlength;
 };
 /********************************************************************************/
 $rootScope.Form={};
 $rootScope.checkout={};
 $scope.checkoutuser=function(data){
-$rootScope.checkouttotal=data;
-$state.transitionTo('app.checkout', {},{reload: true, inherit: true, notify: true });
-$rootScope.showonlysummary=true;
-$rootScope.showshipinfoinput=false;
-$rootScope.showshipinfo=false;
-if($rootScope.Form.Checkout!=null){
-$rootScope.checkout={};
-$rootScope.Form.Checkout.$setPristine(); }
+      $rootScope.checkouttotal=data;
+      $rootScope.$emit('hide', false);
+
+      $state.transitionTo('app.checkout', {},{reload: true, inherit: true, notify: true });
+      $rootScope.showonlysummary=true;
+      $rootScope.showshipinfoinput=false;
+      $rootScope.showshipinfo=false;
+    /*  if($rootScope.Form.Checkout!=null){
+      $rootScope.checkout={};
+      $rootScope.Form.Checkout.$setPristine(); }*/
 
 };
 /********************************************************************************/
 $scope.getshippinginformation=function()
 {
-$rootScope.showshipinfoinput=true;
-$rootScope.showshipinfo=false;
+      $rootScope.showshipinfoinput=true;
+      $rootScope.showshipinfo=false;
 };
 /**********************************************************************************/
 $rootScope.submitshipinfo=function(){
-  console.log("3");
-  console.log($rootScope.Form);
-$rootScope.showshipinfoinput=false;
-$rootScope.showshipinfo=true;
+      $rootScope.showshipinfoinput=false;
+      $rootScope.showshipinfo=true;
 };
 /**********************************************************************************/
 $rootScope.editcart=function(){
-console.log($rootScope.Form);
-$rootScope.Form.Checkout.$setPristine();
-$state.transitionTo('app.cart', {},{reload: true, inherit: true, notify: true });
+      //$rootScope.Form.Checkout.$setPristine();
+      $rootScope.$emit('hide', true);
+      $state.transitionTo('app.cart', {},{reload: true, inherit: true, notify: true });
+};
+/**********************************************************************************/
+$rootScope.goHome=function(){
+      //$rootScope.Form.Checkout.$setPristine();
+      $rootScope.$emit('hide', true);
+      $state.transitionTo('app.products', {},{reload: true, inherit: true, notify: true });
 };
 /*********************************************************************************/
 $rootScope.placeorder=function(){
-$rootScope.grandtotal=$rootScope.total+Math.round($rootScope.total*0.06);
-$rootScope.checkout.grandtotal=$rootScope.grandtotal;
-console.log($rootScope.checkout);
-};
+      $rootScope.$emit('hide', true);
+      $rootScope.grandtotal=$rootScope.total+Math.round($rootScope.total*0.01);
+      $rootScope.checkout.grandtotal=$rootScope.grandtotal;
+      $rootScope.checkout.pdt_ids=$rootScope.pdt_ids;
+      SendFactory.seturl('products/placeorder','POST',$rootScope.checkout);
+      SendFactory.send()
+      .then(function success(response){
 
+         if(response.data=="error")
+         {
+           $state.transitionTo('app.login', {},{reload: true, inherit: true, notify: true });
+         }
+         else if(response.data=="success")
+         {
+           $ionicPopup.alert({
+              title: 'Online Shopping site',
+              template: 'Successfully placed the error...',
+              okText:'Okay!'
+            }).then(function(res) {
+                  $window.localStorage['cartlength']=0;
+                  $state.transitionTo('app.products', {},{reload: true, inherit: true, notify: true });
+            });
+         }
+         else
+         {
+            var unavailable=response.data;
+            var statustext='The following products are already bagged out:<br>';
+            for(var i=0;i<unavailable.length;i++)
+            {
+              statustext+=unavailable[i].product_name+"("+unavailable[i].quantity+")<br>";
+            }
+            $ionicPopup.alert({
+               title: 'Online Shopping site',
+               template: statustext,
+               okText:'Okay!'
+             }).then(function(res) {
+
+                   $state.transitionTo('app.cart', {},{reload: true, inherit: true, notify: true });
+             });
+         }
+
+       },function failure(response){
+         console.log("failure");
+      });
+
+};
+/**********************************************************************************/
 }])
 /********************************************************************************************/
 .controller('CartCtrl',['$scope','$rootScope','$stateParams' ,function($scope, $rootScope,$stateParams) {
